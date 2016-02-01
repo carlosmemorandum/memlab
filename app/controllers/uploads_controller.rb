@@ -32,7 +32,7 @@ class UploadsController < ApplicationController
     end
     
     directoryToZip = Rails.root.join('public','uploads')
-    @outputFile = Rails.root.join('public','uploads', timestamp('export.zip'))
+    @outputFile = Rails.root.join('public', timestamp('export.zip'))
     zip(directoryToZip, @outputFile)
     @@list.each do |i|
       destroy(i)
