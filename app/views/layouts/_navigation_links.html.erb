@@ -1,2 +1,8 @@
 <%# add navigation links to this file %>
-<li><%= link_to "Imágenes", new_upload_path %></li>
+<li class="has-dropdown">
+  <a href="#">Imágenes</a>
+  <ul class="dropdown">
+    <%= nav_active('new', 'active').html_safe %><%= link_to "Redimensionar", new_upload_path %></li>
+    <%= nav_active('index', 'active').html_safe %><%= link_to "Listado", uploads_path %></li>
+  </ul>
+</li>

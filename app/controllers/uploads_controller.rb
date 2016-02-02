@@ -8,6 +8,9 @@ class UploadsController < ApplicationController
     @upload = Upload.new
   end
   
+  def index
+  end
+  
   def create
     @@list = []
     @submitted = params[:commit]
