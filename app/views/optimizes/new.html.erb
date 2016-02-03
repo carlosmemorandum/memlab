@@ -1,0 +1,11 @@
+<%= content_for :title do %>Optimizar las imágenes<% end %>
+<h1>Optimizar las imágenes</h1>
+<p>App te optimiza y cambia el nombre de las imágenes y te las guarda en las carpetas large/xlarge y comprime en .zip</p>
+
+<%= @optimize.name %>
+
+<%= form_for @optimize, html: { class: 'form'} do |f| %>
+	<%= f.text_field :name, placeholder: 'Nombre del archivo (sin extension)' %>
+	<%= f.file_field :image, multiple: true %>
+	<%= f.submit "Enviar", class: 'submit' %>
+<% end %>
