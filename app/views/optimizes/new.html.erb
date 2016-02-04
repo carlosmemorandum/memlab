@@ -6,6 +6,8 @@
 
 <%= form_for @optimize, html: { class: 'form'} do |f| %>
 	<%= f.text_field :name, placeholder: 'Nombre del archivo (sin extension)' %>
+	<%= f.text_field :movil, placeholder: "Valor para movil, por defecto es 'movil'" %>
+	<%= f.text_field :general, placeholder: "Valor para general, por defecto es 'general'" %>
 	<%= f.file_field :image, multiple: true %>
 	<%= f.submit "Enviar", class: 'submit' %>
 <% end %>
