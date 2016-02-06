@@ -1,4 +1,4 @@
-require 'zip_helper.rb'
+require 'i18n'
 
 class UploadsController < ApplicationController
   
@@ -34,9 +34,12 @@ class UploadsController < ApplicationController
       convert_more(file, filenames[index], image_type)
     end
     
+    delete(['export.zip', '.DS_Store'])
+    
     directoryToZip = Rails.root.join('public','uploads')
-    @outputFile = Rails.root.join('public', timestamp('export.zip'))
+    @outputFile = Rails.root.join('public', 'export.zip')
     zip(directoryToZip, @outputFile)
+    
     @@list.each do |i|
       destroy(i)
     end
@@ -53,10 +56,10 @@ class UploadsController < ApplicationController
   end
   
   def strip_filename(file)
-    @file = file.original_filename.downcase
+    @file = I18n.transliterate(file.original_filename.downcase)
     parse = @file.split(/\s+/)
-    res = timestamp(parse.join("_"))
-    return res
+    res = parse.join("_")
+    return res.gsub("?","")
   end
   
   def timestamp(file)
@@ -112,6 +115,18 @@ class UploadsController < ApplicationController
   
   def download(file)
     send_file(file)
+  end
+  
+  def delete(files)
+    dirs = ['public', 'public/uploads/small', 'public/uploads/large', 'public/uploads/xlarge']
+    dirs.each do |dir|
+      files.each do |file|
+        path = Rails.root.join(dir, file)
+        if File.exist?(path)
+          destroy(path)
+        end
+      end
+    end
   end
   
   def destroy(file)
