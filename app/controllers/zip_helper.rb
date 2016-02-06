@@ -21,7 +21,7 @@ class ZipFileGenerator
 
   # Zip the input directory.
   def write()
-    entries = Dir.entries(@inputDir); entries.delete("."); entries.delete(".."); entries.delete(".gitignore")
+    entries = Dir.entries(@inputDir); entries.delete("."); entries.delete(".."); entries.delete(".gitignore"); entries.delete(".DS_Store")
     io = Zip::File.open(@outputFile, Zip::File::CREATE);
 
     writeEntries(entries, "", io)
@@ -38,7 +38,7 @@ class ZipFileGenerator
       puts "Deflating " + diskFilePath
       if  File.directory?(diskFilePath)
         io.mkdir(zipFilePath)
-        subdir =Dir.entries(diskFilePath); subdir.delete("."); subdir.delete(".."); subdir.delete(".gitignore")
+        subdir =Dir.entries(diskFilePath); subdir.delete("."); subdir.delete(".."); subdir.delete(".gitignore"); subdir.delete(".DS_Store")
         writeEntries(subdir, zipFilePath, io)
       else
         io.get_output_stream(zipFilePath) { |f| f.puts(File.open(diskFilePath, "rb").read())}

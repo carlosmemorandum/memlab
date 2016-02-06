@@ -34,7 +34,7 @@ class UploadsController < ApplicationController
       convert_more(file, filenames[index], image_type)
     end
     
-    delete(['export.zip', '.DS_Store'])
+    delete('export.zip')
     
     directoryToZip = Rails.root.join('public','uploads')
     @outputFile = Rails.root.join('public', 'export.zip')
@@ -117,15 +117,10 @@ class UploadsController < ApplicationController
     send_file(file)
   end
   
-  def delete(files)
-    dirs = ['public', 'public/uploads/small', 'public/uploads/large', 'public/uploads/xlarge']
-    dirs.each do |dir|
-      files.each do |file|
-        path = Rails.root.join(dir, file)
-        if File.exist?(path)
-          destroy(path)
-        end
-      end
+  def delete(file)
+    path = Rails.root.join('public', file)
+    if File.exist?(path)
+      destroy(path)
     end
   end
   
