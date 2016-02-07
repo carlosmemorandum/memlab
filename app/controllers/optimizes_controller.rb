@@ -91,4 +91,8 @@ class OptimizesController < ApplicationController
   def destroy(file)
     File.delete(file)
   end
+  
+  def download(file)
+    send_file(file)
+  end
 end
