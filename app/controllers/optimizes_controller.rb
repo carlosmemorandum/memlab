@@ -1,38 +1,59 @@
+require 'i18n'
+
 class OptimizesController < ApplicationController
 
   attr_reader :large, :xlarge
   
   def new
     @optimize = Optimize.new
+    @optimize.movil = 'movil'
+    @optimize.general = 'general'
   end
   
   def create
-    @optimize = Optimize.new(secure_params)
-    if @optimize.movil == ""
-      @optimize.movil = 'movil'
-    end
-    if @optimize.general == ""
-      @optimize.general = 'general'
-    end
-    
-    uploaded_io = params[:optimize][:image]
-    dirs = ['xlarge', 'large']
+    @optimize = Optimize.new(params[:optimize])
+    @list = []
     
     if @optimize.valid?
-      uploaded_io.each do | upfile |
-        dirs.each do |dir|
-          #path = path(dir, strip_filename(@optimize.name))
-          path = path(dir, strip_filename(upfile))
-          File.open(path, 'wb') do |file| file.write(upfile.read)
-          end
-          optimize(path)
+      @optimize.image.each do |upfile|
+        path = path(map_dir(upfile.original_filename), strip_filename(map_lang(upfile.original_filename, @optimize.name)))
+        File.open(path, 'wb') do |file| file.write(upfile.read)
         end
+        optimize(path)
+        @list << path
       end
-      Rails.logger.debug "Muj debug, movil: #{@optimize.movil}, general je: #{@optimize.general}"
-      redirect_to root_path
+      
+      delete('export.zip')
+      
+      directoryToZip = Rails.root.join('public','uploads')
+      @outputFile = Rails.root.join('public', 'export.zip')
+      zip(directoryToZip, @outputFile)
+    
+      @list.uniq.each do |i|
+        destroy(i)
+      end
+      
+      download(@outputFile)
+
     else
-      flash.now[:alert] = "Por favor indica el nombre del archivo"
+      flash.now[:alert] = "Hay algun problema en el formulario."
       render :new
+    end
+  end
+  
+  def map_dir(file)
+    if file.scan(/_#{@optimize.movil}_/) != []
+      return :large
+    else
+      return :xlarge
+    end
+  end
+  
+  def map_lang(filename, name)
+    if filename.downcase.scan(/_(en|es|de|fr|it|pt|eu|hu)\./) != []
+      return name.gsub(/(_| |)#idioma#/, "_#{$1}")
+    else
+      return name.gsub(/(_| |)#idioma#/, "_es")
     end
   end
   
@@ -42,9 +63,9 @@ class OptimizesController < ApplicationController
   end
   
   def strip_filename(file)
-    @file = I18n.transliterate(file.original_filename.downcase)
+    @file = I18n.transliterate(file)
     parse = @file.split(/\s+/)
-    res = parse.join("_")
+    res = parse.join("_").gsub("?", "").downcase
     parse_extension = res.split(/\.\w{3}$/)
     return parse_extension.join("") + ".jpg"
   end
@@ -55,9 +76,19 @@ class OptimizesController < ApplicationController
     return image
   end
   
-  private
+  def zip(dir, file)
+    zf = ZipFileGenerator.new(dir, file)
+    zf.write()
+  end
   
-  def secure_params
-    params.require(:optimize).permit(:name, :movil, :general)
+  def delete(file)
+    path = Rails.root.join('public', file)
+    if File.exist?(path)
+      destroy(path)
+    end
+  end
+  
+  def destroy(file)
+    File.delete(file)
   end
 end

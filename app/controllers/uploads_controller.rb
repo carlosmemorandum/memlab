@@ -13,40 +13,44 @@ class UploadsController < ApplicationController
   
   def create
     @@list = []
-    @submitted = params[:commit]
-    uploaded_io = params[:upload][:image]
+    @upload = Upload.new(params[:upload])
+    uploaded_io = @upload.image
     image_type = params[:image_type].to_i
     imgs = []
     filenames = []
     
-    uploaded_io.each do |upfile|
-      path = path(:xlarge, strip_filename(upfile))
-      File.open(path, 'wb') do |file| file.write(upfile.read)
+    if @upload.valid?
+      uploaded_io.each do |upfile|
+        path = path(:xlarge, strip_filename(upfile))
+        File.open(path, 'wb') do |file| file.write(upfile.read)
+        end
+        convert(path, path, mapping(image_type, 2), false)
+        optimize(path)
+        imgs << path
+        @@list << path
+        filenames << strip_filename(upfile)
       end
-      convert(path, path, mapping(image_type, 2), false)
-      optimize(path)
-      imgs << path
-      @@list << path
-      filenames << strip_filename(upfile)
+    
+      imgs.each_with_index do |file, index|
+        convert_more(file, filenames[index], image_type)
+      end
+    
+      delete('export.zip')
+    
+      directoryToZip = Rails.root.join('public','uploads')
+      @outputFile = Rails.root.join('public', 'export.zip')
+      zip(directoryToZip, @outputFile)
+    
+      @@list.each do |i|
+        destroy(i)
+      end
+      
+      #flash[:notice] = "Your files were successfully uploaded. Your chose #{image_type}"
+      download(@outputFile)
+    else
+      flash.now[:alert] = "No ha subido ningúna imagen."
+      render :new
     end
-    
-    imgs.each_with_index do |file, index|
-      convert_more(file, filenames[index], image_type)
-    end
-    
-    delete('export.zip')
-    
-    directoryToZip = Rails.root.join('public','uploads')
-    @outputFile = Rails.root.join('public', 'export.zip')
-    zip(directoryToZip, @outputFile)
-    
-    @@list.each do |i|
-      destroy(i)
-    end
-    
-    #flash[:notice] = "Your files were successfully uploaded. Your chose #{image_type}"
-
-    download(@outputFile)
 
   end
   

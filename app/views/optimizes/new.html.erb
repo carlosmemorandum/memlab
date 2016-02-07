@@ -2,11 +2,23 @@
 <h3>Optimizar las imágenes</h3>
 <p>App te optimiza y cambia el nombre de las imágenes y te las guarda en las carpetas large/xlarge y comprime en .zip</p>
 
-<%= @optimize.name %>
+<% if @optimize.errors.any? %>
+<div id="error_explanation" class="alert-box round alert">
+  <ul>
+  <% @optimize.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+  <% end %>
+  </ul>
+</div>
+<% end %>
 
 <%= form_for @optimize, html: { class: 'form'} do |f| %>
-	<%= f.text_field :name, placeholder: 'Nombre del archivo (sin extension)' %>
+
+	<%= label_tag :movil, "Nombre del archivo (sin extensión), idioma con patron #idioma#'" %>
+	<%= f.text_field :name, placeholder: 'Nombre (i.e. donyo_parking_#idioma#)' %>
+	<%= label_tag :movil, "Clave para móvil (por defecto 'movil'):" %>
 	<%= f.text_field :movil, placeholder: "Valor para movil, por defecto es 'movil'" %>
+	<%= label_tag :general, "Clave para desktop (por defecto 'general'):" %>
 	<%= f.text_field :general, placeholder: "Valor para general, por defecto es 'general'" %>
 	<%= f.file_field :image, multiple: true %>
 	<%= f.submit "Enviar", class: 'submit' %>
