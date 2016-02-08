@@ -42,7 +42,7 @@ class OptimizesController < ApplicationController
   end
   
   def map_dir(file)
-    if file.scan(/_#{@optimize.movil}_/) != []
+    if file.scan(/_#{@optimize.movil}(|_)/) != []
       return :large
     else
       return :xlarge
