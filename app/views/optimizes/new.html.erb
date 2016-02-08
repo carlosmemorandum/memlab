@@ -12,7 +12,7 @@
 </div>
 <% end %>
 
-<%= form_for @optimize, html: { class: 'form'} do |f| %>
+<%= form_for @optimize, html: { class: 'small-10 medium-6 large-4'} do |f| %>
 
 	<%= label_tag :movil, "Nombre del archivo (sin extensión), idioma con patron #idioma#" %>
 	<%= f.text_field :name, placeholder: 'Nombre (i.e. donyo_parking_#idioma#)' %>
@@ -20,6 +20,8 @@
 	<%= f.text_field :movil, placeholder: "Valor para movil, por defecto es 'movil'" %>
 	<%= label_tag :general, "Clave para desktop (por defecto 'general'):" %>
 	<%= f.text_field :general, placeholder: "Valor para general, por defecto es 'general'" %>
+	<%= label_tag :quality, "Calidad de imagen (entre 30-100), por defecto 70:" %>
+	<%= f.text_field :quality, placeholder: "Calidad de imagen, por defecto es 70" %>
 	<%= f.file_field :image, multiple: true %>
 	<%= f.submit "Enviar", class: 'submit' %>
 <% end %>

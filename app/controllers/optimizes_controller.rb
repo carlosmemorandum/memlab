@@ -8,6 +8,7 @@ class OptimizesController < ApplicationController
     @optimize = Optimize.new
     @optimize.movil = 'movil'
     @optimize.general = 'general'
+    @optimize.quality = 70
   end
   
   def create
@@ -42,7 +43,7 @@ class OptimizesController < ApplicationController
   end
   
   def map_dir(file)
-    if file.scan(/_#{@optimize.movil}(|_)/) != []
+    if file.scan(/_#{@optimize.movil}_/) != []
       return :large
     else
       return :xlarge
@@ -51,9 +52,9 @@ class OptimizesController < ApplicationController
   
   def map_lang(filename, name)
     if filename.downcase.scan(/_(en|es|de|fr|it|pt|eu|hu)\./) != []
-      return name.gsub(/(_| |)#idioma#(_| |)/, "_#{$1}")
+      return name.gsub(/(_| |)#idioma#/, "_#{$1}")
     else
-      return name.gsub(/(_| |)#idioma#(_| |)/, "_es")
+      return name.gsub(/(_| |)#idioma#/, "_es")
     end
   end
   
@@ -71,7 +72,7 @@ class OptimizesController < ApplicationController
   end
   
   def optimize(file)
-    image = ImageOptimizer.new("#{file}", quality: 70)
+    image = ImageOptimizer.new("#{file}", quality: @optimize.quality.to_i)
     image.optimize
     return image
   end
