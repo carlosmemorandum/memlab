@@ -51,9 +51,9 @@ class OptimizesController < ApplicationController
   
   def map_lang(filename, name)
     if filename.downcase.scan(/_(en|es|de|fr|it|pt|eu|hu)\./) != []
-      return name.gsub(/(_| |)#idioma#/, "_#{$1}")
+      return name.gsub(/(_| |)#idioma#(_| |)/, "_#{$1}")
     else
-      return name.gsub(/(_| |)#idioma#/, "_es")
+      return name.gsub(/(_| |)#idioma#(_| |)/, "_es")
     end
   end
   

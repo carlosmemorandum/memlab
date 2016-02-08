@@ -14,7 +14,7 @@
 
 <%= form_for @optimize, html: { class: 'form'} do |f| %>
 
-	<%= label_tag :movil, "Nombre del archivo (sin extensión), idioma con patron #idioma#'" %>
+	<%= label_tag :movil, "Nombre del archivo (sin extensión), idioma con patron #idioma#" %>
 	<%= f.text_field :name, placeholder: 'Nombre (i.e. donyo_parking_#idioma#)' %>
 	<%= label_tag :movil, "Clave para móvil (por defecto 'movil'):" %>
 	<%= f.text_field :movil, placeholder: "Valor para movil, por defecto es 'movil'" %>
