@@ -71,7 +71,7 @@ class OptimizesController < ApplicationController
   end
   
   def optimize(file)
-    image = ImageOptimizer.new("#{file}", quality: 80)
+    image = ImageOptimizer.new("#{file}", quality: 65)
     image.optimize
     return image
   end
