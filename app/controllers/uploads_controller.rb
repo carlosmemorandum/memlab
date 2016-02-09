@@ -21,14 +21,14 @@ class UploadsController < ApplicationController
     
     if @upload.valid?
       uploaded_io.each do |upfile|
-        path = path(:xlarge, strip_filename(upfile))
+        path = path(:xlarge, strip_filename(upfile.original_filename))
         File.open(path, 'wb') do |file| file.write(upfile.read)
         end
         convert(path, path, mapping(image_type, 2), false)
         optimize(path)
         imgs << path
         @@list << path
-        filenames << strip_filename(upfile)
+        filenames << strip_filename(upfile.original_filename)
       end
     
       imgs.each_with_index do |file, index|
@@ -39,7 +39,7 @@ class UploadsController < ApplicationController
     
       directoryToZip = Rails.root.join('public','uploads')
       @outputFile = Rails.root.join('public', 'export.zip')
-      zip(directoryToZip, @outputFile)
+      zip(directoryToZip, @outputFile, 'uploads')
     
       @@list.each do |i|
         destroy(i)
@@ -60,10 +60,17 @@ class UploadsController < ApplicationController
   end
   
   def strip_filename(file)
-    @file = I18n.transliterate(file.original_filename.downcase)
-    parse = @file.split(/\s+/)
-    res = parse.join("_")
-    return res.gsub("?","")
+    file.to_s do |name|
+      name.I18n.transliterate
+      name.split(/\s+/).downcase
+      name.join("_")
+      name.gsub("?","")
+    end
+    return file
+    #@file = I18n.transliterate(file.original_filename.downcase)
+    #parse = @file.split(/\s+/)
+    #res = parse.join("_")
+    #return res.gsub("?","")
   end
   
   def timestamp(file)
@@ -112,8 +119,8 @@ class UploadsController < ApplicationController
     return image
   end
   
-  def zip(dir, file)
-    zf = ZipFileGenerator.new(dir, file)
+  def zip(dir, file, controller)
+    zf = ZipFileGenerator.new(dir, file, controller)
     zf.write()
   end
   
