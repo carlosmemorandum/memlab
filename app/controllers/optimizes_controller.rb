@@ -64,15 +64,9 @@ class OptimizesController < ApplicationController
   end
   
   def strip_filename(file)
-    file.to_s do |name|
-      name.I18n.transliterate
-      # get only the filename, not the whole path
-      name.sub! /\A.*(\\|\/)/, ''
-      name.join("_").gsub("?", "").downcase
-      name.split(/\.\w{3}$/)
-      name.join("")
-    end
-    return file + ".jpg"
+    filename = I18n.transliterate(file).split(/\s+/).join("_").gsub("?", "").downcase.split(/\.\w{3}$/).join("")
+    filename.sub! /\A.*(\\|\/)/, ''
+    return filename + ".jpg"
   end
   
   def optimize(file)

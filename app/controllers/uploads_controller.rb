@@ -60,17 +60,9 @@ class UploadsController < ApplicationController
   end
   
   def strip_filename(file)
-    file.to_s do |name|
-      name.I18n.transliterate
-      name.split(/\s+/).downcase
-      name.join("_")
-      name.gsub("?","")
-    end
-    return file
-    #@file = I18n.transliterate(file.original_filename.downcase)
-    #parse = @file.split(/\s+/)
-    #res = parse.join("_")
-    #return res.gsub("?","")
+    filename = I18n.transliterate(file).split(/\s+/).join("_").gsub("?","").downcase
+    filename.sub! /\A.*(\\|\/)/, ''
+    return filename
   end
   
   def timestamp(file)
