@@ -14,14 +14,18 @@ require 'zip'
 class ZipFileGenerator
 
   # Initialize with the directory to zip and the location of the output archive.
-  def initialize(inputDir, outputFile)
+  def initialize(inputDir, outputFile, controller)
     @inputDir = inputDir
     @outputFile = outputFile
+    @controller = controller
   end
 
   # Zip the input directory.
   def write()
     entries = Dir.entries(@inputDir); entries.delete("."); entries.delete(".."); entries.delete(".gitignore"); entries.delete(".DS_Store")
+    if @controller == 'optimize'
+      entries.delete("small")
+    end
     io = Zip::File.open(@outputFile, Zip::File::CREATE);
 
     writeEntries(entries, "", io)

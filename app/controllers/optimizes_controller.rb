@@ -28,7 +28,7 @@ class OptimizesController < ApplicationController
       
       directoryToZip = Rails.root.join('public','uploads')
       @outputFile = Rails.root.join('public', 'export.zip')
-      zip(directoryToZip, @outputFile)
+      zip(directoryToZip, @outputFile, 'optimize')
     
       @list.uniq.each do |i|
         destroy(i)
@@ -64,11 +64,15 @@ class OptimizesController < ApplicationController
   end
   
   def strip_filename(file)
-    @file = I18n.transliterate(file)
-    parse = @file.split(/\s+/)
-    res = parse.join("_").gsub("?", "").downcase
-    parse_extension = res.split(/\.\w{3}$/)
-    return parse_extension.join("") + ".jpg"
+    file.to_s do |name|
+      name.I18n.transliterate
+      # get only the filename, not the whole path
+      name.sub! /\A.*(\\|\/)/, ''
+      name.join("_").gsub("?", "").downcase
+      name.split(/\.\w{3}$/)
+      name.join("")
+    end
+    return file + ".jpg"
   end
   
   def optimize(file)
@@ -77,8 +81,8 @@ class OptimizesController < ApplicationController
     return image
   end
   
-  def zip(dir, file)
-    zf = ZipFileGenerator.new(dir, file)
+  def zip(dir, file, controller)
+    zf = ZipFileGenerator.new(dir, file, controller)
     zf.write()
   end
   
