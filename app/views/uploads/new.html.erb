@@ -2,7 +2,19 @@
 <h3>Subir y redimensionar las imágenes</h3>
 <p>Redimensiona las imágenes a los tamaños 390x260px, 600x400px y 1185x1185px y las guarda en las carpetas small/large/xlarge y comprime en .zip</p>
 
-<%= form_for @upload do |f| %>
+<% if @upload.errors.any? %>
+<div id="error_explanation" class="alert-box round alert">
+  <ul>
+  <% @upload.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+  <% end %>
+  </ul>
+</div>
+<% end %>
+
+<%= form_for @upload, html: { class: 'small-10 medium-6 large-4' } do |f| %>
+	<%= label_tag :quality, "Calidad de imagen (entre 30-100), por defecto 70:" %>
+	<%= f.text_field :quality, placeholder: "Calidad de imagen, por defecto es 70" %>
 	<%= f.file_field :image, multiple: true %>
 	<%= f.submit "Enviar", class: 'submit' %>
 <% end %>

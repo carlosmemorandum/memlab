@@ -6,6 +6,7 @@ class UploadsController < ApplicationController
 
   def new
     @upload = Upload.new
+    @upload.quality = 70
   end
   
   def index
@@ -48,7 +49,7 @@ class UploadsController < ApplicationController
       #flash[:notice] = "Your files were successfully uploaded. Your chose #{image_type}"
       download(@outputFile)
     else
-      flash.now[:alert] = "No ha subido ningúna imagen."
+      flash.now[:alert] = "Hay algun problema en el formulario."
       render :new
     end
 
@@ -106,7 +107,7 @@ class UploadsController < ApplicationController
   end
   
   def optimize(file)
-    image = ImageOptimizer.new("#{file}", quality: 80)
+    image = ImageOptimizer.new("#{file}", quality: @upload.quality.to_i)
     image.optimize
     return image
   end
