@@ -15,6 +15,7 @@ gem 'high_voltage'
 gem 'mini_magick'
 gem 'image_optimizer'
 gem 'rubyzip'
+gem 'rollbar', '~> 2.7.1'
 
 group :development do
   gem 'better_errors'
