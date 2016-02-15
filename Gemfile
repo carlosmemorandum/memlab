@@ -17,6 +17,8 @@ gem 'image_optimizer'
 gem 'rubyzip'
 gem 'rollbar', '~> 2.7.1'
 
+gem 'puma'
+
 group :development do
   gem 'better_errors'
   gem 'quiet_assets'
