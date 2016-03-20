@@ -36,6 +36,9 @@
   @extend .button;
   @extend .radius;
   }
+.large-2 {
+	width: 50% !important;
+}
 // apply styles to HTML elements
 // to make views framework-neutral
 main {

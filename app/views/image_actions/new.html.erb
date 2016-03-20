@@ -1,0 +1,28 @@
+<%= content_for :title do %>Subir y modificar las imágenes<% end %>
+<h3>Subir y modificar las imágenes</h3>
+
+<% if @image_action.errors.any? %>
+<div id="error_explanation" class="alert-box round alert">
+  <ul>
+  <% @image_action.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+  <% end %>
+  </ul>
+</div>
+<% end %>
+
+<%= form_for @image_action, html: { class: 'small-10 medium-6 large-4' } do |f| %>
+	<%= label_tag :width, "Anchura de imagen en px (entre 1-1999 o auto):"%>
+	<%= f.text_field :width, placeholder: "Anchura de imagen en px", class: 'medium-6 large-2' %>
+	<%= label_tag :height, "Altura de imagen en px (entre 1-1999 o auto):"%>
+	<%= f.text_field :height, placeholder: "Altura de imagen en px", class: 'medium-6 large-2' %>
+	<%= label_tag :quality, "Calidad de imagen (entre 30-100), por defecto 70:"%>
+	<%= f.text_field :quality, placeholder: "Calidad de imagen", class: 'medium-6 large-2' %>
+	<%= label_tag :progressive, "Progressive (jpg), interlaced (PNG):"%>
+	<%= f.select :progressive, options_for_select([ ["Si", true], ["No", false]], "Si")%>
+	<%= label_tag :crop, "Cortar?"%>
+	<%= f.select :crop, options_for_select([ ["Si", true], ["No", false]], "Si")%>
+	<%= f.file_field :image, multiple: true %>
+	<%= f.submit "Enviar", class: 'submit' %>
+	
+<% end %>
