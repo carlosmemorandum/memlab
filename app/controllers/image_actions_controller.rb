@@ -16,6 +16,12 @@ class ImageActionsController < ApplicationController
         path = path(strip_filename(upfile.original_filename))
         File.open(path, 'wb') do |file| file.write(upfile.read)
         end
+        
+        convert(path, "#{@image_action.width}x#{@image_action.height}", @image_action.progressive)
+        
+        # 0 - no convert
+        # 100xauto
+        
         optimize(path)
         @list << path
       end
@@ -33,7 +39,7 @@ class ImageActionsController < ApplicationController
       download(@outputFile)
       
     else
-      flash.now[:alert] = "Hay algun problema en el formulario."
+      flash.now[:alert] = "Hay algun problema en el formulario o imagen no es válida."
       render :new
     end
   end
@@ -47,6 +53,18 @@ class ImageActionsController < ApplicationController
     filename = I18n.transliterate(file).split(/\s+/).join("_").gsub("?","").downcase
     filename.sub! /\A.*(\\|\/)/, ''
     return filename
+  end
+  
+  def convert(file, size, prog)
+    image = MiniMagick::Image.open(file)
+    #image = MiniMagick::Image.new(file) do |b|
+    if prog.to_i == 0
+      image.interlace "#{image.type}"
+    else
+      image.interlace 'none'
+    end
+    image.write(file)
+    return image
   end
   
   def optimize(file)
