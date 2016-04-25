@@ -1,8 +1,6 @@
 require 'i18n'
 
 class WatermarksController < ApplicationController
-
-	attr_reader :xlarge
 	
 	def new
 		@watermark = Watermark.new
@@ -12,10 +10,11 @@ class WatermarksController < ApplicationController
 	def create
 		@watermark = Watermark.new(secure_params)
 		@list = []
+		@logo = 'logo_bemate_white.png'
 
 		if @watermark.valid?
 			@watermark.image.each do |upfile|
-				path = path(:xlarge, strip_filename(upfile.original_filename))
+				path = path(strip_filename(upfile.original_filename))
 				File.open(path, 'wb') do |file| file.write(upfile.read)
 				end
 				optimize(path)
@@ -25,15 +24,24 @@ class WatermarksController < ApplicationController
 
 			delete('export.zip')
 
-			redirect_to root_path
+			directoryToZip = Rails.root.join('public','uploads')
+			@outputFile = Rails.root.join('public', 'export.zip')
+			zip(directoryToZip, @outputFile, 'watermark')
+
+			@list.uniq.each do |i|
+        destroy(i)
+      end
+      
+      download(@outputFile)
+
 		else
 			flash.now[:alert] = "Hay algun problema en el formulario."
       render :new
 		end
 	end
 
-	def path(dir, file)
-    path = Rails.root.join('public','uploads',"#{dir}", file)
+	def path(file)
+    path = Rails.root.join('public','uploads', file)
     return path
   end
 
@@ -50,15 +58,20 @@ class WatermarksController < ApplicationController
   end
 
   def watermark_imgs(file, output)
-		logo = Rails.root.join('app','assets','images', 'logo_bemate.png')
-		first_image  = MiniMagick::Image.new(file)
-		second_image = MiniMagick::Image.new(logo)
-		Rails.logger.info("My log: " + file + " - " + logo)
+		logo = Rails.root.join('app','assets','images', "#{@logo}")
+		first_image  = MiniMagick::Image.new("#{file}")
+		second_image = MiniMagick::Image.new("#{logo}")
 		result = first_image.composite(second_image) do |c|
-			c.compose "Over"    # OverCompositeOp
-			c.geometry "+20+20" # copy second_image onto first_image from (20, 20)
+			c.compose "Softlight"
+			c.gravity "SouthEast"
+			c.geometry "+143+173"
 		end
 		result.write(output)
+  end
+
+  def zip(dir, file, controller)
+    zf = ZipFileGenerator.new(dir, file, controller)
+    zf.write()
   end
 
   def delete(file)
@@ -70,6 +83,10 @@ class WatermarksController < ApplicationController
 
   def destroy(file)
     File.delete(file)
+  end
+
+  def download(file)
+    send_file(file)
   end
 
 	private

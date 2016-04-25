@@ -25,7 +25,7 @@ class ZipFileGenerator
     entries = Dir.entries(@inputDir); entries.delete("."); entries.delete(".."); entries.delete(".gitignore"); entries.delete(".DS_Store")
     if @controller == 'optimize'
       entries.delete("small")
-    elsif @controller == 'image_action'
+    elsif @controller == 'image_action' || @controller == 'watermark'
       entries.delete("small")
       entries.delete("large")
       entries.delete("xlarge")
