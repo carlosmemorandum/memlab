@@ -1,0 +1,21 @@
+<%= content_for :title do %>Combinar las imágenes con logotipo<% end %>
+<h3>Combinar las imágenes</h3>
+<p>App te pone una marca de agua en las imágenes y te las guarda en la carpeta xlarge y comprime en .zip</p>
+
+<% if @watermark.errors.any? %>
+<div id="error_explanation" class="alert-box round alert">
+  <ul>
+  <% @watermark.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+  <% end %>
+  </ul>
+</div>
+<% end %>
+
+<%= form_for @watermark, html: { class: 'small-10 medium-6 large-4'} do |f| %>
+
+	<%= label_tag :quality, "Calidad de imagen (entre 30-100), por defecto 70:" %>
+	<%= f.text_field :quality, placeholder: "Calidad de imagen, por defecto es 70" %>
+	<%= f.file_field :image, multiple: true %>
+	<%= f.submit "Enviar", class: 'submit' %>
+<% end %>
