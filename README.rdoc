@@ -24,7 +24,10 @@ Things you may want to cover:
 * ...
 
 * ...
+<<<<<<< HEAD
 
+=======
+>>>>>>> 2b7ebf783ed54851cc29490c25e24dec823f4002
 
 Please feel free to use a different markup language if you do not plan to run
 <tt>rake doc:app</tt>.
