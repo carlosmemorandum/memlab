@@ -10,7 +10,7 @@ class WatermarksController < ApplicationController
 	def create
 		@watermark = Watermark.new(secure_params)
 		@list = []
-		@logo = 'logo_bemate_white.png'
+		@logo = 'logo_bemate_white.svg'
 
 		if @watermark.valid?
 			@watermark.image.each do |upfile|
@@ -22,7 +22,7 @@ class WatermarksController < ApplicationController
 				@list << path
 			end
 
-			delete('export.zip')
+			delete('export.zip', 'export.png')
 
 			directoryToZip = Rails.root.join('public','uploads')
 			@outputFile = Rails.root.join('public', 'export.zip')
@@ -60,7 +60,16 @@ class WatermarksController < ApplicationController
   def watermark_imgs(file, output)
 		logo = Rails.root.join('app','assets','images', "#{@logo}")
 		first_image  = MiniMagick::Image.new("#{file}")
-		second_image = MiniMagick::Image.new("#{logo}")
+		size = [first_image.width, first_image.height]
+		image_density = ((size[0].to_f / 1440) * 72) * 2.5
+		Rails.logger.info("Log: #{first_image.width.to_s} - #{image_density.to_s}")
+		
+		second_image = Rails.root.join('public', "export.png")
+		if second_image
+  		`convert -density #{image_density} -background none #{logo} #{second_image}`
+  	end
+  	second_image  = MiniMagick::Image.new("#{second_image}")
+
 		result = first_image.composite(second_image) do |c|
 			c.compose "Softlight"
 			c.gravity "SouthEast"
@@ -74,11 +83,15 @@ class WatermarksController < ApplicationController
     zf.write()
   end
 
-  def delete(file)
-    path = Rails.root.join('public', file)
-    if File.exist?(path)
-      destroy(path)
-    end
+  def delete(*args)
+  	Rails.logger.info(args)
+  	args.each do |i|
+  		path = Rails.root.join('public', i)
+	    if File.exist?(path)
+	      destroy(path)
+	    end
+  	end
+    
   end
 
   def destroy(file)
