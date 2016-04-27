@@ -1,33 +1,30 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is an experimental lab of Memorandum Multimedia (author David Mrnustik) with small apps that help with some job tasks.
 
-Things you may want to cover:
+There are following apps at the moment:
 
-* Ruby version
+* Optimizator: designed for client's web to handle images for offer and promotion banners
 
-* System dependencies
+* Uploader: designed for client's web to handle images for galleries
 
-* Configuration
+* Watermark: designed for client's web to insert semi-transparent logo watermark on photos
 
-* Database creation
 
-* Database initialization
+This project is done on Ruby o Rails and deployed on heroku:
 
-* How to run the test suite
+http://dm-memlab.herokuapp.com
 
-* Services (job queues, cache servers, search engines, etc.)
+* Ruby version: 2.2.4.
 
-* Deployment instructions
+* Rails version: 4.2.5.
 
-* ...
+* buildpacks: heroku-buildpack-jpegoptim, heroku-buildpack-optipng, heroku-buildpack-ruby
 
-* ...
-<<<<<<< HEAD
+* server: Puma
 
-=======
->>>>>>> 2b7ebf783ed54851cc29490c25e24dec823f4002
+* server initialization: Procfile
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+* no DB
+
+* deploy: heroku with buildpacks in app.json
