@@ -1,6 +1,7 @@
 require 'i18n'
 
 class UploadsController < ApplicationController
+  include FileActions
   
   attr_reader :small, :large, :xlarge
 
@@ -22,11 +23,11 @@ class UploadsController < ApplicationController
     
     if @upload.valid?
       uploaded_io.each do |upfile|
-        path = path(:xlarge, strip_filename(upfile.original_filename))
+        path = FileActions.path(strip_filename(upfile.original_filename), :xlarge)
         File.open(path, 'wb') do |file| file.write(upfile.read)
         end
         convert(path, path, mapping(image_type, 2), false)
-        optimize(path)
+        FileActions.optimize(path, @upload.quality.to_i)
         imgs << path
         @@list << path
         filenames << strip_filename(upfile.original_filename)
@@ -36,14 +37,14 @@ class UploadsController < ApplicationController
         convert_more(file, filenames[index], image_type)
       end
     
-      delete('export.zip')
+      FileActions.delete('export.zip')
     
       directoryToZip = Rails.root.join('public','uploads')
       @outputFile = Rails.root.join('public', 'export.zip')
-      zip(directoryToZip, @outputFile, 'uploads')
+      FileActions.zip(directoryToZip, @outputFile, 'uploads')
     
       @@list.each do |i|
-        destroy(i)
+        FileActions.destroy(i)
       end
       
       #flash[:notice] = "Your files were successfully uploaded. Your chose #{image_type}"
@@ -53,11 +54,6 @@ class UploadsController < ApplicationController
       render :new
     end
 
-  end
-  
-  def path(dir, file)
-    path = Rails.root.join('public','uploads',"#{dir}", file)
-    return path
   end
   
   def strip_filename(file)
@@ -92,44 +88,22 @@ class UploadsController < ApplicationController
   end
   
   def convert_more(file, filename, image_type)
-    path  = [path(:small, filename), path(:large, filename)]
+    path  = [FileActions.path(filename, :small), FileActions.path(filename, :large)]
     if image_type == 0
       2.times do |i|
         convert(file, path[i], mapping(image_type, i), true)
-        optimize(path[i])
+        FileActions.optimize(path[i], @upload.quality.to_i)
         @@list << path[i]
       end
     elsif
       convert(file, path[1], mapping(image_type, 1), true)
-      optimize(path[1])
+      FileActions.optimize(path[1], @upload.quality.to_i)
       @@list << path[1]
     end
   end
   
-  def optimize(file)
-    image = ImageOptimizer.new("#{file}", quality: @upload.quality.to_i)
-    image.optimize
-    return image
-  end
-  
-  def zip(dir, file, controller)
-    zf = ZipFileGenerator.new(dir, file, controller)
-    zf.write()
-  end
-  
   def download(file)
     send_file(file)
-  end
-  
-  def delete(file)
-    path = Rails.root.join('public', file)
-    if File.exist?(path)
-      destroy(path)
-    end
-  end
-  
-  def destroy(file)
-    File.delete(file)
   end
   
 end

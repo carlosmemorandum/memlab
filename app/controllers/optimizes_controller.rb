@@ -1,6 +1,7 @@
 require 'i18n'
 
 class OptimizesController < ApplicationController
+  include FileActions
 
   attr_reader :large, :xlarge
   
@@ -17,21 +18,21 @@ class OptimizesController < ApplicationController
     
     if @optimize.valid?
       @optimize.image.each do |upfile|
-        path = path(map_dir(upfile.original_filename), strip_filename(map_lang(upfile.original_filename, @optimize.name)))
+        path = FileActions.path(FileActions.strip_filename(map_lang(upfile.original_filename, @optimize.name)), map_dir(upfile.original_filename))
         File.open(path, 'wb') do |file| file.write(upfile.read)
         end
-        optimize(path)
+        FileActions.optimize(path, @optimize.quality.to_i)
         @list << path
       end
       
-      delete('export.zip')
+      FileActions.delete('export.zip')
       
       directoryToZip = Rails.root.join('public','uploads')
       @outputFile = Rails.root.join('public', 'export.zip')
-      zip(directoryToZip, @outputFile, 'optimize')
+      FileActions.zip(directoryToZip, @outputFile, 'optimize')
     
       @list.uniq.each do |i|
-        destroy(i)
+        FileActions.destroy(i)
       end
       
       download(@outputFile)
@@ -57,40 +58,7 @@ class OptimizesController < ApplicationController
       return name.gsub(/(_| |)#idioma#(_| |)/, "_es")
     end
   end
-  
-  def path(dir, file)
-    path = Rails.root.join('public','uploads',"#{dir}", file)
-    return path
-  end
-  
-  def strip_filename(file)
-    filename = I18n.transliterate(file).split(/\s+/).join("_").gsub("?", "").downcase.split(/\.\w{3}$/).join("")
-    filename.sub! /\A.*(\\|\/)/, ''
-    return filename + ".jpg"
-  end
-  
-  def optimize(file)
-    image = ImageOptimizer.new("#{file}", quality: @optimize.quality.to_i)
-    image.optimize
-    return image
-  end
-  
-  def zip(dir, file, controller)
-    zf = ZipFileGenerator.new(dir, file, controller)
-    zf.write()
-  end
-  
-  def delete(file)
-    path = Rails.root.join('public', file)
-    if File.exist?(path)
-      destroy(path)
-    end
-  end
-  
-  def destroy(file)
-    File.delete(file)
-  end
-  
+
   def download(file)
     send_file(file)
   end
