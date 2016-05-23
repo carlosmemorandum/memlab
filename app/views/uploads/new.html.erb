@@ -21,4 +21,10 @@
 
 <script>
 	var mySubmit = document.querySelectorAll('.submit');
+	mySubmit.onclick = function() {
+		mySubmit.addEventListener("click", 
+			function(e) {
+				 e.preventDefault(); 
+			})
+	}
 </script>
