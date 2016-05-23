@@ -15,6 +15,21 @@
 //= require turbolinks
 //= require foundation
 //= require_tree .
+
+var setDisabled = function(trigger, element) {
+	  trigger.onsubmit = function() {
+		element.setAttribute("disabled", "disabled");
+		return true;
+	}
+};
+
+var resetDisabled = function(trigger, element) {
+	 trigger.onclick = function() {
+		 element.removeAttribute("disabled");
+		 element.value = "Enviar";
+	}
+}
+
 $(function() {
 	$(document).on('ready page:load', function () {
 	$(document).foundation();
