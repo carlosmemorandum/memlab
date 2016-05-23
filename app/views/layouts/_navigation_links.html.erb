@@ -1,6 +1,6 @@
 <%# add navigation links to this file %>
 <li class="has-dropdown">
-  <a href="#">Imágenes</a>
+  <a href="#" class="preventDefault">Imágenes</a>
   <ul class="dropdown">
     <%= nav_active('new', 'uploads', 'active').html_safe %><%= link_to "Redimensionar", new_upload_path %></li>
     <%= nav_active('new', 'optimizes', 'active').html_safe %><%= link_to "Optimizar", new_optimize_path %></li>
@@ -8,3 +8,10 @@
 <%#= nav_active('new', 'image_actions', 'active').html_safe %><%#= link_to "Modificar", new_image_action_path %><!--</li>-->
   </ul>
 </li>
+<script>
+	var myLink = document.querySelector(".preventDefault");
+
+	myLink.addEventListener("click", function(event){
+	    event.preventDefault()
+	});
+</script>
