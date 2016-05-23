@@ -17,16 +17,13 @@
 	<%= f.text_field :quality, placeholder: "Calidad de imagen, por defecto es 70" %>
 	<%= f.file_field :image, multiple: true %>
 	<%= f.submit "Enviar", class: 'submit' %>
-	<%= f.button "Reset", type: 'reset', class: 'reset button secondary' %>
 <% end %>
 
 <script>
 
 var formUpload = document.getElementById('new_upload');
 var mySubmit = document.querySelector('.submit');
-var myReset = document.querySelector('.reset');
 
 setDisabled(formUpload, mySubmit);
-resetDisabled(myReset, mySubmit);
 
 </script>
