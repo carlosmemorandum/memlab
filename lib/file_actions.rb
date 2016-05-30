@@ -1,4 +1,7 @@
 module FileActions
+
+	OUTPUT_FILE = Rails.root.join('public', 'export.zip')
+
 	def FileActions.path(file, dir = false)
     if !dir
     	path = Rails.root.join('public','uploads', file)

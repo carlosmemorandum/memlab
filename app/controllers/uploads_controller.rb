@@ -5,12 +5,16 @@ class UploadsController < ApplicationController
   
   attr_reader :small, :large, :xlarge
 
+  def index
+  end
+
+  def export
+    @file = File.new("#{FileActions::OUTPUT_FILE}", "r")
+  end
+  
   def new
     @upload = Upload.new
     @upload.quality = 70
-  end
-  
-  def index
   end
   
   def create
@@ -40,15 +44,15 @@ class UploadsController < ApplicationController
       FileActions.delete('export.zip')
     
       directoryToZip = Rails.root.join('public','uploads')
-      @outputFile = Rails.root.join('public', 'export.zip')
-      FileActions.zip(directoryToZip, @outputFile, 'uploads')
+      FileActions.zip(directoryToZip, FileActions::OUTPUT_FILE, 'uploads')
     
       @@list.each do |i|
         FileActions.destroy(i)
       end
       
       #flash[:notice] = "Your files were successfully uploaded. Your chose #{image_type}"
-      download(@outputFile)
+      #download(FileActions::OUTPUT_FILE)
+      redirect_to uploads_export_path
     else
       flash.now[:alert] = "Hay algun problema en el formulario."
       render :new
@@ -102,8 +106,8 @@ class UploadsController < ApplicationController
     end
   end
   
-  def download(file)
-    send_file(file)
+  def download
+    send_file(FileActions::OUTPUT_FILE)
   end
   
 end
