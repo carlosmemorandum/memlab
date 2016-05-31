@@ -4,6 +4,10 @@ class OptimizesController < ApplicationController
   include FileActions
 
   attr_reader :large, :xlarge
+
+  def export
+    @file = File.new("#{FileActions::OUTPUT_FILE}", "r")
+  end
   
   def new
     @optimize = Optimize.new
@@ -35,7 +39,7 @@ class OptimizesController < ApplicationController
         FileActions.destroy(i)
       end
       
-      download(@outputFile)
+      redirect_to optimizes_export_path
 
     else
       flash.now[:alert] = "Hay algun problema en el formulario."
@@ -59,7 +63,7 @@ class OptimizesController < ApplicationController
     end
   end
 
-  def download(file)
-    send_file(file)
+  def download
+    send_file(FileActions::OUTPUT_FILE)
   end
 end

@@ -2,6 +2,10 @@ require 'i18n'
 
 class WatermarksController < ApplicationController
 	include FileActions
+
+	def export
+    @file = File.new("#{FileActions::OUTPUT_FILE}", "r")
+  end
 	
 	def new
 		@watermark = Watermark.new
@@ -33,7 +37,7 @@ class WatermarksController < ApplicationController
 				FileActions.destroy(i)
 			end
 			
-			download(@outputFile)
+			redirect_to watermarks_export_path
 
 		else
 			flash.now[:alert] = "Hay algun problema en el formulario."
@@ -61,9 +65,9 @@ class WatermarksController < ApplicationController
 		result.write(output)
 	end
 
-	def download(file)
-		send_file(file)
-	end
+	def download
+    send_file(FileActions::OUTPUT_FILE)
+  end
 
 	private
 

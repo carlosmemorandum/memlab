@@ -5,9 +5,6 @@ class UploadsController < ApplicationController
   
   attr_reader :small, :large, :xlarge
 
-  def index
-  end
-
   def export
     @file = File.new("#{FileActions::OUTPUT_FILE}", "r")
   end

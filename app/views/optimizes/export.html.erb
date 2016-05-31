@@ -1,0 +1,9 @@
+<%= content_for :title do %>Optimizar las imágenes<% end %>
+<br>
+<% if File.exist?(@file) %>
+	<p><%= link_to "Download file (#{@file.size} kB)", optimizes_download_path %></p>
+<% else %>
+	<p>No hay ningún archivo para descargar.</p>
+<% end %>
+
+<p><%= link_to "Back", new_optimize_path %></p>

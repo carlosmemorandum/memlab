@@ -3,7 +3,7 @@
 <% if File.exist?(@file) %>
 	<p><%= link_to "Download file (#{@file.size} kB)", uploads_download_path %></p>
 <% else %>
-	<p>There is no file to download.</p>
+	<p>No hay ningún archivo para descargar.</p>
 <% end %>
 
 <p><%= link_to "Back", new_upload_path %></p>
