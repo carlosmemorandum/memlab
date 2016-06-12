@@ -37,7 +37,12 @@ class WatermarksController < ApplicationController
 				FileActions.destroy(i)
 			end
 			
-			redirect_to watermarks_export_path
+			respond_to do |format|
+        if @watermark.valid?
+          format.html { redirect_to watermarks_export_path }
+          format.js {}
+        end
+      end
 
 		else
 			flash.now[:alert] = "Hay algun problema en el formulario."

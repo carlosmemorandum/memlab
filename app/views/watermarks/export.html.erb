@@ -1,9 +1,9 @@
 <%= content_for :title do %>Combinar las imágenes con logotipo<% end %>
 <br>
 <% if File.exist?(@file) %>
-	<p><%= link_to "Download file (#{@file.size} kB)", watermarks_download_path %></p>
+	<p><%= link_to "Descargar archivo (#{@file.size} kB)", watermarks_download_path, 'target': '_blank' %></p>
 <% else %>
 	<p>No hay ningún archivo para descargar.</p>
 <% end %>
 
-<p><%= link_to "Back", new_watermark_path %></p>
+<p><%= link_to "Volver", new_watermark_path %></p>

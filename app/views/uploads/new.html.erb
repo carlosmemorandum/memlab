@@ -12,15 +12,25 @@
 	</div>
 	<% end %>
 
-	<%= form_for @upload, html: { class: 'small-10 medium-6 large-4' } do |f| %>
+	<%= form_for @upload, remote: true, html: { class: 'form-dragndrop small-10 medium-6 large-4' } do |f| %>
+		<%= content_tag :div, class: 'box__input' do -%>
 		<%= label_tag :quality, "Calidad de imagen (entre 30-100), por defecto 70:" %>
 		<%= f.text_field :quality, placeholder: "Calidad de imagen, por defecto es 70" %>
-		<%= f.file_field :image, multiple: true %>
-		<%= f.submit "Enviar", class: 'submit' %>
+		<%= f.file_field :image, multiple: true, 'id': :image, class: 'box__file', 'data-multiple-caption': '{count} archivos seleccionados' %>
+		<%= content_tag :label, 'for': :image, class: 'box__label' do -%>
+			<%= content_tag(:strong, 'Elige los archivos') %>
+			<%= content_tag(:span, ' o arrástralos aquí', class: 'box__dragndrop') %>.
+		<% end -%>
+		<%= f.submit "Enviar", class: 'submit box__button' %>
+		<% end -%>
+		<%= content_tag(:div, 'Subiendo...', class: 'box__uploading') %>
+		<%= content_tag(:div, 'Hecho!', class: 'box__success') %>
+		<%= content_tag(:div, "Error!", class: 'box__error') %>
 	<% end %>
 
 <script>
 
+var $export = 'uploads';
 var formUpload = document.getElementById('new_upload');
 var mySubmit = document.querySelector('.submit');
 

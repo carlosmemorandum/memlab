@@ -1,0 +1,42 @@
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+  display: none;
+  margin-top: 10px;
+}
+.form-dragndrop {
+	margin-bottom: 20px;
+	outline: 2px dashed #ddd;
+	outline-offset: -8px;
+}
+.form-dragndrop input[type=submit] {
+	margin-top: 15px;
+	margin-bottom: 0px;
+}
+.form-dragndrop .box__file {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.form-dragndrop.has-advanced-upload {
+  background-color: white;
+  padding: 16px;
+}
+.form-dragndrop.has-advanced-upload .box__dragndrop {
+  display: inline;
+}
+.form-dragndrop.is-dragover {
+  background-color: #ddd;
+  outline: 2px dashed white;
+  outline-offset: -8px;
+}
+.form-dragndrop.is-uploading .box__input {
+  visibility: none;
+}
+.form-dragndrop.is-uploading .box__uploading {
+  display: block;
+}

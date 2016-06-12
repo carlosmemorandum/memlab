@@ -13,6 +13,9 @@ class UploadsController < ApplicationController
     @upload = Upload.new
     @upload.quality = 70
   end
+
+  def show
+  end
   
   def create
     @@list = []
@@ -46,10 +49,14 @@ class UploadsController < ApplicationController
       @@list.each do |i|
         FileActions.destroy(i)
       end
-      
-      #flash[:notice] = "Your files were successfully uploaded. Your chose #{image_type}"
-      #download(FileActions::OUTPUT_FILE)
-      redirect_to uploads_export_path
+
+      respond_to do |format|
+        if @upload.valid?
+          format.html { redirect_to uploads_export_path }
+          format.js {}
+        end
+      end
+
     else
       flash.now[:alert] = "Hay algun problema en el formulario."
       render :new

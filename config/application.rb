@@ -31,5 +31,8 @@ module Memlab
     
     config.autoload_paths += %W["#{config.root}/app/validators"]
     config.autoload_paths += %W(#{config.root}/lib)
+
+    # Include the authenticity token in remote forms.
+    config.action_view.embed_authenticity_token_in_remote_forms = true
   end
 end

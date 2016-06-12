@@ -38,8 +38,13 @@ class OptimizesController < ApplicationController
       @list.uniq.each do |i|
         FileActions.destroy(i)
       end
-      
-      redirect_to optimizes_export_path
+
+      respond_to do |format|
+        if @optimize.valid?
+          format.html { redirect_to optimizes_export_path }
+          format.js {}
+        end
+      end
 
     else
       flash.now[:alert] = "Hay algun problema en el formulario."
