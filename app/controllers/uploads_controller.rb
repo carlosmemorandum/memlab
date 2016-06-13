@@ -19,7 +19,7 @@ class UploadsController < ApplicationController
   
   def create
     @@list = []
-    @upload = Upload.new(params[:upload])
+    @upload = Upload.new(secure_params)
     uploaded_io = @upload.image
     image_type = params[:image_type].to_i
     imgs = []
@@ -112,6 +112,12 @@ class UploadsController < ApplicationController
   
   def download
     send_file(FileActions::OUTPUT_FILE)
+  end
+
+  private
+
+  def secure_params
+    params.require(:upload).permit(:quality, :image => [])
   end
   
 end

@@ -48,6 +48,7 @@ $(function() {
 		  var droppedFiles = false,
 		  		$input    = $form.find('input[type="file"]'),
 			    $label    = $('.box__label'),
+			    //$label    = $form.find('label'),
 			    showFiles = function(files) {
 			      $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace( '{count}', files.length ) : files[ 0 ].name);
 			    };
@@ -67,6 +68,9 @@ $(function() {
   			showFiles( droppedFiles );
 		    //console.log(droppedFiles.length);
 		  });
+		  $input.on('change', function(e) {
+			  showFiles(e.target.files);
+			});
 
 		}
 		$form.on('submit', function(e) {
@@ -85,9 +89,7 @@ $(function() {
 			    });
 			  }
 
-			  $input.on('change', function(e) {
-				  showFiles(e.target.files);
-				});
+			  
 
 			  $.ajax({
 			    url: $form.attr('action'),
