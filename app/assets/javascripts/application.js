@@ -41,14 +41,16 @@ $(function() {
 
 		var $form = $('.form-dragndrop');
 
+		//mySubmit.setAttribute('disabled', 'disabled');
+
 		if (isAdvancedUpload) {
 
 			$form.addClass('has-advanced-upload');
+			$
 
 		  var droppedFiles = false,
 		  		$input    = $form.find('input[type="file"]'),
 			    $label    = $('.box__label'),
-			    //$label    = $form.find('label'),
 			    showFiles = function(files) {
 			      $label.text(files.length > 1 ? ($input.attr('data-multiple-caption') || '').replace( '{count}', files.length ) : files[ 0 ].name);
 			    };
@@ -66,14 +68,22 @@ $(function() {
 		  .on('drop', function(e) {
 		    droppedFiles = e.originalEvent.dataTransfer.files; // the files that were dropped
   			showFiles( droppedFiles );
-		    //console.log(droppedFiles.length);
+  			mySubmit.removeAttribute('disabled');
+		    console.log(droppedFiles.length);
 		  });
 		  $input.on('change', function(e) {
 			  showFiles(e.target.files);
+			  console.log(e.target.files);
+
+			  if (e.target.files) {
+			  	mySubmit.removeAttribute('disabled');
+			  }
 			});
 
 		}
 		$form.on('submit', function(e) {
+		 
+
 		  if ($form.hasClass('is-uploading')) return false;
 
 		  $form.addClass('is-uploading').removeClass('is-error');
@@ -88,8 +98,6 @@ $(function() {
 			      ajaxData.append( $input.attr('name'), file );
 			    });
 			  }
-
-			  
 
 			  $.ajax({
 			    url: $form.attr('action'),
